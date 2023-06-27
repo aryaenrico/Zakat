@@ -24,7 +24,8 @@
     <EditText
         android:id="@+id/etUsername"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
+        android:autofillHints="username"
         android:hint="@string/enter_your_username"
         android:inputType="text"/>
 
@@ -39,14 +40,15 @@
     <EditText
         android:id="@+id/etPassword"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:hint="@string/enter_your_password"
         android:inputType="textPassword"/>
 
     <Button
         android:id="@+id/btLogin"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="54dp"
+
         android:text="@string/login"
         android:layout_marginTop="16dp"/>
 
@@ -57,8 +59,8 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="16dp"/>
 
-    <TextView
-        android:layout_width="wrap_content"
+    <Button
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/register"
         android:textSize="18sp"

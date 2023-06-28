@@ -17,6 +17,7 @@ import com.example.zakat.databinding.ActivityZakatFitrahBinding
 import com.example.zakat.model.LoginResponse
 import com.example.zakat.model.RegisterResponse
 import com.example.zakat.retrofit.ApiConfig
+import com.example.zakat.sharedpreferences.UserPreferences
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -33,9 +34,10 @@ class ZakatFitrahActivity : AppCompatActivity() {
     private lateinit var binding: ActivityZakatFitrahBinding
     private var getFile: File? = null
     private var getUriFile:Uri? = null
+
     companion object {
         const val CAMERA_X_RESULT = 200
-        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
         private const val REQUEST_CODE_PERMISSIONS = 10
     }
 
@@ -69,15 +71,17 @@ class ZakatFitrahActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding =ActivityZakatFitrahBinding.inflate(layoutInflater)
         setContentView(binding.root);
+
         binding.btGambar.setOnClickListener { view->
             startGallery()
         }
         binding.buttonUpload.setOnClickListener { view ->
            upload()
+            Toast.makeText(this@ZakatFitrahActivity, timeStamp,Toast.LENGTH_SHORT).show()
         }
-        Glide.with(this@ZakatFitrahActivity)
-            .load("https://indrasela.net//mobile_zakat/foto/28-Jun-20232605174862480156647.jpg")
-            .into(binding.gambar)
+//        Glide.with(this@ZakatFitrahActivity)
+//            .load("https://indrasela.net//mobile_zakat/foto/2023-06-287259839204919233760.jpg")
+//            .into(binding.gambar)
 
     }
 
@@ -108,7 +112,7 @@ class ZakatFitrahActivity : AppCompatActivity() {
                     Toast.makeText(this@ZakatFitrahActivity,responseBody.status,Toast.LENGTH_SHORT).show()
 
                 } else {
-                    Toast.makeText(this@ZakatFitrahActivity,responseBody?.message,Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@ZakatFitrahActivity,"gagal",Toast.LENGTH_SHORT).show()
                 }
             }
             override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
@@ -137,14 +141,14 @@ class ZakatFitrahActivity : AppCompatActivity() {
 //            getUriFile = selectedImg
             val myFile = uriToFile(selectedImg, this@ZakatFitrahActivity)
             getFile = myFile
-            binding.etjumlahUang.setText(getUriFile?.toString())
+            binding.etjumlahUang.setText(getFile?.name.toString())
         }
     }
 
     private fun upload(){
 
-            val file = reduceFileImage(getFile as File)
-            addZakat(getFile as File,"2022-09-01","111","20000","4")
+            val userPreferences = UserPreferences(this@ZakatFitrahActivity)
+            addZakat(getFile as File,timeStamp,userPreferences.getId().toString(),"20000","4")
 
     }
 

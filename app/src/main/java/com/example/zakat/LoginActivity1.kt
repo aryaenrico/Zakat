@@ -7,16 +7,24 @@ import android.widget.Toast
 import com.example.zakat.databinding.ActivityMainBinding
 import com.example.zakat.model.LoginResponse
 import com.example.zakat.retrofit.ApiConfig
+import com.example.zakat.sharedpreferences.UserPreferences
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class LoginActivity1 : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding =ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root);
+        val userPreferences = UserPreferences(this@LoginActivity1);
+
+        if (userPreferences.getId() != 0 ){
+            val moveIntent = Intent(this@LoginActivity1, ZakatFitrahActivity::class.java)
+            startActivity(moveIntent)
+        }
         binding.btLogin.setOnClickListener{view->
             Toast.makeText(this@LoginActivity1,"tunggu",Toast.LENGTH_SHORT).show()
             cekLogin(binding.etUsername.text.toString(),binding.etPassword.text.toString())
@@ -38,6 +46,8 @@ class LoginActivity1 : AppCompatActivity() {
                 val responseBody = response.body()
                 if (response.isSuccessful && responseBody != null) {
                    Toast.makeText(this@LoginActivity1,responseBody.status,Toast.LENGTH_SHORT).show()
+                    val userPreferences = UserPreferences(this@LoginActivity1);
+                    userPreferences.setId(responseBody.id)
                     val moveIntent = Intent(this@LoginActivity1, ZakatFitrahActivity::class.java)
                     startActivity(moveIntent)
                 } else {

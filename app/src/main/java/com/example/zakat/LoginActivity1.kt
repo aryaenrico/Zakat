@@ -1,5 +1,6 @@
 package com.example.zakat
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
@@ -20,6 +21,10 @@ class LoginActivity1 : AppCompatActivity() {
             Toast.makeText(this@LoginActivity1,"tunggu",Toast.LENGTH_SHORT).show()
             cekLogin(binding.etUsername.text.toString(),binding.etPassword.text.toString())
         }
+        binding.buttonRegister.setOnClickListener { view ->
+            val moveIntent = Intent(this@LoginActivity1, RegisterActivity::class.java)
+            startActivity(moveIntent)
+        }
     }
 
     private fun cekLogin(username:String,password:String){
@@ -33,6 +38,8 @@ class LoginActivity1 : AppCompatActivity() {
                 val responseBody = response.body()
                 if (response.isSuccessful && responseBody != null) {
                    Toast.makeText(this@LoginActivity1,responseBody.status,Toast.LENGTH_SHORT).show()
+                    val moveIntent = Intent(this@LoginActivity1, ZakatFitrahActivity::class.java)
+                    startActivity(moveIntent)
                 } else {
                     Toast.makeText(this@LoginActivity1,responseBody?.message,Toast.LENGTH_SHORT).show()
                 }

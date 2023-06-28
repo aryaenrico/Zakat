@@ -17,12 +17,12 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/email"
+        android:text="Alamat"
         android:textSize="18sp"
         android:layout_marginBottom="8dp"/>
 
     <EditText
-        android:id="@+id/etEmail"
+        android:id="@+id/etAlamat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/enter_your_email"

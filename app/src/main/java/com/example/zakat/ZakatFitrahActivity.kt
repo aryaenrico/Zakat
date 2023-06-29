@@ -33,8 +33,6 @@ import java.io.File
 class ZakatFitrahActivity : AppCompatActivity() {
     private lateinit var binding: ActivityZakatFitrahBinding
     private var getFile: File? = null
-    private var getUriFile:Uri? = null
-
     companion object {
         const val CAMERA_X_RESULT = 200
         private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -77,19 +75,14 @@ class ZakatFitrahActivity : AppCompatActivity() {
         }
         binding.buttonUpload.setOnClickListener { view ->
            upload()
-            Toast.makeText(this@ZakatFitrahActivity, timeStamp,Toast.LENGTH_SHORT).show()
         }
-//        Glide.with(this@ZakatFitrahActivity)
-//            .load("https://indrasela.net//mobile_zakat/foto/2023-06-287259839204919233760.jpg")
-//            .into(binding.gambar)
+
 
     }
 
 
     private fun addZakat(file:File,tanggal:String,id_pembayar:String,pembayaran_uang:String,tanggungan:String){
-//        val imageFile = File(getRealPathFromUri(file)) // Convert URI to File
-//        val requestFile = imageFile.asRequestBody("image/jpeg".toMediaTypeOrNull())
-//        val imagePart = MultipartBody.Part.createFormData("file", imageFile.name, requestFile)
+
         val TANGGAL = tanggal.toRequestBody("text/plain".toMediaType())
         val ID_PEMBAYAR = id_pembayar.toRequestBody("text/plain".toMediaType())
         val Pembayaran_uang = pembayaran_uang.toRequestBody("text/plain".toMediaType())
@@ -130,7 +123,6 @@ class ZakatFitrahActivity : AppCompatActivity() {
         intent.type = "image/*"
         val chooser = Intent.createChooser(intent, "Choose a Picture")
         launcherIntentGallery.launch(chooser)
-
     }
 
     private val launcherIntentGallery = registerForActivityResult(
@@ -138,17 +130,16 @@ class ZakatFitrahActivity : AppCompatActivity() {
     ) { result ->
         if (result.resultCode == RESULT_OK) {
             val selectedImg: Uri = result.data?.data as Uri
-//            getUriFile = selectedImg
+            binding.gambar.setImageURI(selectedImg)
             val myFile = uriToFile(selectedImg, this@ZakatFitrahActivity)
             getFile = myFile
-            binding.etjumlahUang.setText(getFile?.name.toString())
         }
     }
 
     private fun upload(){
 
             val userPreferences = UserPreferences(this@ZakatFitrahActivity)
-            addZakat(getFile as File,timeStamp,userPreferences.getId().toString(),"20000","4")
+            addZakat(getFile as File,timeStamp,userPreferences.getId().toString(),binding.etjumlahUang.text.toString(),binding.etTanggungan.text.toString())
 
     }
 

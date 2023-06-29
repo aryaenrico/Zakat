@@ -33,7 +33,7 @@
         android:drawableStart="@drawable/baseline_attach_money_24"
         android:drawablePadding="12dp"
         android:hint="@string/masukkan_jumlah_uang"
-        android:inputType="text"
+        android:inputType="number"
         android:padding="16dp"
         android:textSize="14sp" />
 

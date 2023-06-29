@@ -14,7 +14,6 @@ import retrofit2.Response
 
 class LoginActivity1 : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding =ActivityMainBinding.inflate(layoutInflater)
@@ -49,7 +48,7 @@ class LoginActivity1 : AppCompatActivity() {
 
                     val userPreferences = UserPreferences(this@LoginActivity1);
                     userPreferences.setId(responseBody.id)
-                    val moveIntent = Intent(this@LoginActivity1, ZakatFitrahActivity::class.java)
+                    val moveIntent = Intent(this@LoginActivity1, DashboardActivity::class.java)
                     startActivity(moveIntent)
                 } else {
                     Toast.makeText(this@LoginActivity1,responseBody?.message,Toast.LENGTH_SHORT).show()

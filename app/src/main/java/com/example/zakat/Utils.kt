@@ -15,15 +15,21 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 private const val FILENAME_FORMAT = "yyyy-MM-dd"
+private  val FILE_NAME_FORMAT_2 ="dd-MMM-yyyy"
 
 val timeStamp: String = SimpleDateFormat(
     FILENAME_FORMAT,
     Locale.US
 ).format(System.currentTimeMillis())
 
+val timeStamp2: String = SimpleDateFormat(
+    FILE_NAME_FORMAT_2,
+    Locale.US
+).format(System.currentTimeMillis())
+
 fun createTempFile(context: Context): File {
     val storageDir: File? = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-    return File.createTempFile(timeStamp, ".jpg", storageDir)
+    return File.createTempFile(timeStamp2, ".jpg", storageDir)
 }
 
 fun uriToFile(selectedImg: Uri, context: Context): File {

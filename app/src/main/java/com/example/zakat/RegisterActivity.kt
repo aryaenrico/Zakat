@@ -38,8 +38,8 @@ class RegisterActivity : AppCompatActivity() {
                 val responseBody = response.body()
                 if (response.isSuccessful && responseBody != null && response.code() == 200) {
                     Toast.makeText(this@RegisterActivity,responseBody.status, Toast.LENGTH_SHORT).show()
-//                    val moveIntent = Intent(this@RegisterActivity, LoginActivity1::class.java)
-//                    startActivity(moveIntent)
+                    val moveIntent = Intent(this@RegisterActivity, LoginActivity1::class.java)
+                    startActivity(moveIntent)
                 } else {
                     Toast.makeText(this@RegisterActivity,"Gagal membuat Akun ", Toast.LENGTH_SHORT).show()
 

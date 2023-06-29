@@ -46,6 +46,7 @@ class LoginActivity1 : AppCompatActivity() {
                 val responseBody = response.body()
                 if (response.isSuccessful && responseBody != null) {
                    Toast.makeText(this@LoginActivity1,responseBody.status,Toast.LENGTH_SHORT).show()
+
                     val userPreferences = UserPreferences(this@LoginActivity1);
                     userPreferences.setId(responseBody.id)
                     val moveIntent = Intent(this@LoginActivity1, ZakatFitrahActivity::class.java)

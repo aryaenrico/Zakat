@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/white"
     android:padding="16dp">
 
     <TextView
@@ -17,15 +18,19 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Alamat"
+        android:text="@string/alamat"
         android:textSize="18sp"
         android:layout_marginBottom="8dp"/>
 
-    <EditText
+    <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/etAlamat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/enter_your_email"
+        android:padding="16dp"
+        android:drawablePadding="12dp"
+        android:drawableStart="@drawable/baseline_location_on_24"
+        android:background="@drawable/bg_textfield"
+        android:hint="@string/masukkan_alamat_anda"
         android:inputType="textEmailAddress"/>
 
     <TextView
@@ -36,11 +41,15 @@
         android:layout_marginTop="16dp"
         android:layout_marginBottom="8dp"/>
 
-    <EditText
+    <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/etUsername"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter your username"
+        android:padding="16dp"
+        android:drawableStart="@drawable/baseline_person_24"
+        android:drawablePadding="12dp"
+        android:background="@drawable/bg_textfield"
+        android:hint="@string/masukkan_username_anda"
         android:inputType="text"/>
 
     <TextView
@@ -51,10 +60,14 @@
         android:layout_marginTop="16dp"
         android:layout_marginBottom="8dp"/>
 
-    <EditText
+    <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/etNama"
         android:layout_width="match_parent"
+        android:padding="16dp"
+        android:drawablePadding="12dp"
+        android:drawableStart="@drawable/baseline_person_pin_24"
         android:layout_height="wrap_content"
+        android:background="@drawable/bg_textfield"
         android:hint="@string/enter_your_name"
         android:inputType="text"/>
 
@@ -70,6 +83,10 @@
         android:id="@+id/etNoTelp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:drawableStart="@drawable/baseline_local_phone_24"
+        android:drawablePadding="12dp"
+        android:background="@drawable/bg_textfield"
         android:hint="@string/enter_your_phone_number"
         android:inputType="phone"/>
 
@@ -81,18 +98,26 @@
         android:layout_marginTop="16dp"
         android:layout_marginBottom="8dp"/>
 
-    <EditText
+    <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/editTextPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:background="@drawable/bg_textfield"
+        android:drawablePadding="12dp"
+        android:drawableStart="@drawable/baseline_lock_24"
         android:hint="@string/enter_your_password"
         android:inputType="textPassword"/>
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/buttonRegister"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/register"
-        android:layout_marginTop="16dp"/>
+        android:background="@drawable/bg_button"
+        android:textSize="14sp"
+        android:textColor="@color/white"
+        android:letterSpacing="0.2"
+        android:layout_marginTop="20dp"/>
 
 </LinearLayout>

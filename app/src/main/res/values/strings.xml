@@ -13,4 +13,25 @@
     <string name="enter_your_name">Enter your name</string>
     <string name="nomor_hp">Nomor HP</string>
     <string name="enter_your_phone_number">Enter your phone number</string>
+    <string name="selamat_datang">Selamat Datang</string>
+    <string name="alamat">Alamat</string>
+    <string name="masukkan_alamat_anda">Masukkan Alamat Anda</string>
+    <string name="masukkan_username_anda">Masukkan Username Anda</string>
+    <string name="phaksi_enrico">Phaksi Enrico</string>
+    <string name="hi_welcome_back">Hi, Welcome Back</string>
+    <string name="apa_yang_ingin_anda_lakukan">Apa yang Ingin Anda Lakukan</string>
+    <string name="zakat_fitrah">Zakat Fitrah</string>
+    <string name="zakat">Zakat</string>
+    <string name="todo">TODO</string>
+    <string name="sedekah">Sedekah</string>
+    <string name="infaq">Infaq</string>
+    <string name="waqaf">Waqaf</string>
+    <string name="jumlah_uang">Jumlah uang</string>
+    <string name="masukkan_jumlah_tanggungan">Masukkan Jumlah Tanggungan</string>
+    <string name="upload_struk_pembayaran">Upload Struk Pembayaran</string>
+    <string name="kirim_bukti_pembayaran">Kirim Bukti Pembayaran</string>
+    <string name="uploadstruk">Upload Struk Pembayaran</string>
+    <string name="jumlah_tanggungan">Jumlah Tanggungan</string>
+    <string name="masukkan_jumlah_uang">Masukkan Jumlah Uang</string>
+    <string name="jumlahUang">Jumlah Uang</string>
 </resources>

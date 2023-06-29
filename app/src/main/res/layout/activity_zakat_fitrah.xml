@@ -3,76 +3,90 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/white"
     android:padding="16dp">
 
+
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp"
         android:text="@string/login"
         android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="16dp"/>
+        android:textStyle="bold" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Jumlah uang"
-        android:textSize="18sp"
-        android:layout_marginBottom="8dp"/>
+        android:layout_marginBottom="8dp"
+        android:text="@string/jumlahUang"
+        android:textSize="18sp" />
 
-    <EditText
+    <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/etjumlah_uang"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         android:autofillHints="username"
-        android:hint="@string/enter_your_username"
-        android:inputType="text"/>
+        android:background="@drawable/bg_textfield"
+        android:drawableStart="@drawable/baseline_attach_money_24"
+        android:drawablePadding="12dp"
+        android:hint="@string/masukkan_jumlah_uang"
+        android:inputType="text"
+        android:padding="16dp"
+        android:textSize="14sp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/password"
-        android:textSize="18sp"
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="8dp"/>
+        android:layout_marginBottom="8dp"
+        android:text="@string/jumlah_tanggungan"
+        android:textSize="18sp" />
 
-    <EditText
+    <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/etTanggungan"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:hint="@string/enter_your_password"
-        android:inputType="textPassword"/>
-
-    <Button
-        android:id="@+id/btGambar"
-        android:layout_width="match_parent"
-        android:layout_height="54dp"
-
-        android:text="gambar"
-        android:layout_marginTop="16dp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/don_t_have_an_account"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="16dp"/>
+        android:background="@drawable/bg_textfield"
+        android:drawableStart="@drawable/baseline_person_add_alt_1_24"
+        android:drawablePadding="12dp"
+        android:hint="@string/masukkan_jumlah_tanggungan"
+        android:inputType="number"
+        android:padding="16dp"
+        android:textSize="14sp" />
+
 
     <ImageView
         android:id="@+id/gambar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        android:layout_marginTop="12dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/uploadstruk" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btGambar"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:layout_marginTop="16dp"
+        android:letterSpacing="0.2"
+        android:textStyle="normal"
+        android:background="@drawable/button_stroke"
+        android:text="@string/uploadstruk" />
 
 
-
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/buttonUpload"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Upload"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_gravity="center_horizontal"/>
+        android:layout_marginTop="64dp"
+        android:background="@drawable/bg_button"
+        android:letterSpacing="0.2"
+        android:text="@string/kirim_bukti_pembayaran"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        android:textStyle="normal" />
 
 </LinearLayout>

@@ -38,7 +38,7 @@ class LoginActivity1 : AppCompatActivity() {
                 val responseBody = response.body()
                 if (response.isSuccessful && responseBody != null) {
                    Toast.makeText(this@LoginActivity1,responseBody.status,Toast.LENGTH_SHORT).show()
-                    val moveIntent = Intent(this@LoginActivity1, ZakatFitrahActivity::class.java)
+                    val moveIntent = Intent(this@LoginActivity1, DashboardActivity::class.java)
                     startActivity(moveIntent)
                 } else {
                     Toast.makeText(this@LoginActivity1,responseBody?.message,Toast.LENGTH_SHORT).show()

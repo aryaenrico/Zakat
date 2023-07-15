@@ -19,6 +19,7 @@ class LoginActivity1 : AppCompatActivity() {
         binding =ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root);
         val userPreferences = UserPreferences(this@LoginActivity1);
+        Toast.makeText(this@LoginActivity1,userPreferences.getId().toString(),Toast.LENGTH_SHORT).show()
 
         if (userPreferences.getId() != 0 ){
             val moveIntent = Intent(this@LoginActivity1, ZakatFitrahActivity::class.java)
@@ -55,8 +56,7 @@ class LoginActivity1 : AppCompatActivity() {
                 }
             }
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-
-                Toast.makeText(this@LoginActivity1,"ancur servernya",Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@LoginActivity1,t.message,Toast.LENGTH_SHORT).show()
             }
         })
     }

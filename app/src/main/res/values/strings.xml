@@ -34,4 +34,8 @@
     <string name="jumlah_tanggungan">Jumlah Tanggungan</string>
     <string name="masukkan_jumlah_uang">Masukkan Jumlah Uang</string>
     <string name="jumlahUang">Jumlah Uang</string>
+    <string name="laporan">Laporan</string>
+    <string name="kotak_amal">Kotak Amal</string>
+    <string name="penyaluran">Penyaluran</string>
+    <string name="jenis_zakat">Jenis Zakat</string>
 </resources>

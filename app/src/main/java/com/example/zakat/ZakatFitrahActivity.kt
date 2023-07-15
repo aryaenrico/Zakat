@@ -7,6 +7,9 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
@@ -77,6 +80,17 @@ class ZakatFitrahActivity : AppCompatActivity() {
            upload()
         }
 
+        val dropdown : AutoCompleteTextView = binding.autoComplete
+        val items = listOf("Zakat Mal","Zakat Fitrah","Zakat Fidyah")
+        val adapter = ArrayAdapter(this,R.layout.dropdown_item,items)
+
+        dropdown.setAdapter(adapter)
+
+        dropdown.onItemClickListener = AdapterView.OnItemClickListener{
+            adapterView, view, i, l ->
+            val itemSelected = adapterView.getItemAtPosition(i)
+            Toast.makeText(this, "items = $itemSelected", Toast.LENGTH_SHORT).show()
+        }
 
     }
 

@@ -2,25 +2,45 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginTop="12dp"
     android:background="@color/white"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
     android:padding="16dp">
 
-
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="16dp"
-        android:text="@string/login"
-        android:textSize="24sp"
-        android:textStyle="bold" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
+        android:text="@string/jenis_zakat"
+        android:textSize="18sp" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:boxCornerRadiusBottomEnd="12dp"
+        app:boxCornerRadiusBottomStart="12dp"
+        app:boxCornerRadiusTopEnd="12dp"
+        app:boxStrokeColor="#E0E0E0"
+        app:boxBackgroundColor="@color/white"
+        app:boxCornerRadiusTopStart="12dp"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        
+        <AutoCompleteTextView
+            android:id="@+id/autoComplete"
+            android:text="@string/jenis_zakat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="none"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="12dp"
         android:text="@string/jumlahUang"
         android:textSize="18sp" />
 
@@ -71,17 +91,17 @@
         android:layout_width="match_parent"
         android:layout_height="54dp"
         android:layout_marginTop="16dp"
-        android:letterSpacing="0.2"
-        android:textStyle="normal"
         android:background="@drawable/button_stroke"
-        android:text="@string/uploadstruk" />
+        android:letterSpacing="0.2"
+        android:text="@string/uploadstruk"
+        android:textStyle="normal" />
 
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/buttonUpload"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="24dp"
         android:background="@drawable/bg_button"
         android:letterSpacing="0.2"
         android:text="@string/kirim_bukti_pembayaran"

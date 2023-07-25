@@ -1,6 +1,7 @@
 package com.example.zakat
 
 import android.Manifest
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -21,6 +22,7 @@ import com.example.zakat.model.LoginResponse
 import com.example.zakat.model.RegisterResponse
 import com.example.zakat.retrofit.ApiConfig
 import com.example.zakat.sharedpreferences.UserPreferences
+import com.google.android.material.snackbar.Snackbar
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -38,36 +40,33 @@ class ZakatFitrahActivity : AppCompatActivity() {
     private var getFile: File? = null
     companion object {
         const val CAMERA_X_RESULT = 200
-        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.READ_MEDIA_IMAGES,Manifest.permission.WRITE_EXTERNAL_STORAGE)
         private const val REQUEST_CODE_PERMISSIONS = 10
+        private const val STORAGE_PERMISSION_REQUEST_CODE = 100
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == REQUEST_CODE_PERMISSIONS) {
-            if (!allPermissionsGranted()) {
-                Toast.makeText(
-                    this,
-                    "Tidak mendapatkan permission.",
-                    Toast.LENGTH_SHORT
-                ).show()
-                finish()
-            }
-        }
+
+
+    private fun requestStoragePermissions() {
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ),
+            STORAGE_PERMISSION_REQUEST_CODE
+        )
     }
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(baseContext, it) == PackageManager.PERMISSION_GRANTED
     }
 
-    // Open the gallery and perform further operations
-    private fun openGallery() {
-        // Your code to open and read images from the gallery goes here
+    private fun areStoragePermissionsGranted(): Boolean {
+        val readPermissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES)
+        return readPermissionCheck == PackageManager.PERMISSION_GRANTED
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding =ActivityZakatFitrahBinding.inflate(layoutInflater)
@@ -88,12 +87,18 @@ class ZakatFitrahActivity : AppCompatActivity() {
 
         dropdown.onItemClickListener = AdapterView.OnItemClickListener{
             adapterView, view, i, l ->
-            val itemSelected = adapterView.getItemAtPosition(i)
-            Toast.makeText(this, "items = $itemSelected", Toast.LENGTH_SHORT).show()
+            if (i < 1){
+                binding.etTanggungan.isEnabled =false
+                binding.etTanggungan.setText("1")
+                binding.etTanggungan.setBackgroundColor(ContextCompat.getColor(this, R.color.grey))
+            }else{
+                binding.etTanggungan.isEnabled =true
+                binding.etTanggungan.setText("")
+                binding.etTanggungan.setBackgroundColor(0x00000000)
+
+            }
         }
-
     }
-
 
     private fun addZakat(file:File,tanggal:String,id_pembayar:String,pembayaran_uang:String,tanggungan:String){
 
@@ -117,14 +122,16 @@ class ZakatFitrahActivity : AppCompatActivity() {
                 val responseBody = response.body()
                 if (response.isSuccessful && responseBody != null) {
                     Toast.makeText(this@ZakatFitrahActivity,responseBody.status,Toast.LENGTH_SHORT).show()
-
+                    val intent = Intent(this@ZakatFitrahActivity, DashboardActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(intent)
                 } else {
                     Toast.makeText(this@ZakatFitrahActivity,"gagal",Toast.LENGTH_SHORT).show()
                 }
             }
             override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
 
-                Toast.makeText(this@ZakatFitrahActivity,"ancur servernya",Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@ZakatFitrahActivity,t.message,Toast.LENGTH_SHORT).show()
             }
         })
 
@@ -132,13 +139,19 @@ class ZakatFitrahActivity : AppCompatActivity() {
     }
 
     private fun startGallery() {
-        val intent = Intent()
-        intent.action = Intent.ACTION_GET_CONTENT
-        intent.type = "image/*"
-        val chooser = Intent.createChooser(intent, "Choose a Picture")
-        launcherIntentGallery.launch(chooser)
-    }
+            if(!areStoragePermissionsGranted()){
+                requestPermissionLauncher.launch(Manifest.permission.READ_MEDIA_IMAGES)
+            }else{
+                val intent = Intent()
+                intent.action = Intent.ACTION_GET_CONTENT
+                intent.type = "image/*"
+                val chooser = Intent.createChooser(intent, "Choose a Picture")
+                launcherIntentGallery.launch(chooser)
+            }
 
+
+
+    }
     private val launcherIntentGallery = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -149,6 +162,32 @@ class ZakatFitrahActivity : AppCompatActivity() {
             getFile = myFile
         }
     }
+
+    val requestPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                startGallery()
+                // Permission is granted. Continue the action or workflow in your
+                // app.
+            }else{
+                val dialogBuilder = AlertDialog.Builder(this)
+                dialogBuilder.setTitle("Akses Media")
+                dialogBuilder.setMessage("Untuk Melanjutkan Izinkan Aplikasi Mengakses Media")
+                dialogBuilder.setPositiveButton("OK") { dialog, _ ->
+                    dialog.dismiss()
+                    startGallery()
+                }
+                dialogBuilder.setNegativeButton("Cancel") { dialog, _ ->
+                    dialog.dismiss()
+                    finish()
+                    // Handle the case where the user cancels the permission request or provide an alternative flow.
+                }
+                val dialog = dialogBuilder.create()
+                dialog.show()
+            }
+        }
 
     private fun upload(){
 

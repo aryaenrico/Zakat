@@ -19,10 +19,10 @@ class LoginActivity1 : AppCompatActivity() {
         binding =ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root);
         val userPreferences = UserPreferences(this@LoginActivity1);
-        Toast.makeText(this@LoginActivity1,userPreferences.getId().toString(),Toast.LENGTH_SHORT).show()
+
 
         if (userPreferences.getId() != 0 ){
-            val moveIntent = Intent(this@LoginActivity1, ZakatFitrahActivity::class.java)
+            val moveIntent = Intent(this@LoginActivity1, DashboardActivity::class.java)
             startActivity(moveIntent)
         }
         binding.btLogin.setOnClickListener{view->
@@ -49,8 +49,9 @@ class LoginActivity1 : AppCompatActivity() {
 
                     val userPreferences = UserPreferences(this@LoginActivity1);
                     userPreferences.setId(responseBody.id)
-                    val moveIntent = Intent(this@LoginActivity1, DashboardActivity::class.java)
-                    startActivity(moveIntent)
+                    val intent = Intent(this@LoginActivity1, DashboardActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                    startActivity(intent)
                 } else {
                     Toast.makeText(this@LoginActivity1,responseBody?.message,Toast.LENGTH_SHORT).show()
                 }

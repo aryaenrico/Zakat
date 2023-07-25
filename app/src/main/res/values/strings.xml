@@ -32,7 +32,7 @@
     <string name="kirim_bukti_pembayaran">Kirim Bukti Pembayaran</string>
     <string name="uploadstruk">Upload Struk Pembayaran</string>
     <string name="jumlah_tanggungan">Jumlah Tanggungan</string>
-    <string name="masukkan_jumlah_uang">Masukkan Jumlah Uang</string>
+    <string name="masukkan_jumlah_uang">Masukkan Jumlah Uang / Tanggungan</string>
     <string name="jumlahUang">Jumlah Uang</string>
     <string name="laporan">Laporan</string>
     <string name="kotak_amal">Kotak Amal</string>

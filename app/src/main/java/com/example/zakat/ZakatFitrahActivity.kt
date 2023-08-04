@@ -8,6 +8,7 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
+import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
@@ -37,30 +38,14 @@ import java.io.File
 
 class ZakatFitrahActivity : AppCompatActivity() {
     private lateinit var binding: ActivityZakatFitrahBinding
+    private var flagJenisZakat=0;
     private var getFile: File? = null
     companion object {
-        const val CAMERA_X_RESULT = 200
-        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.READ_MEDIA_IMAGES,Manifest.permission.WRITE_EXTERNAL_STORAGE)
-        private const val REQUEST_CODE_PERMISSIONS = 10
+
+        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.READ_MEDIA_IMAGES)
         private const val STORAGE_PERMISSION_REQUEST_CODE = 100
     }
 
-
-
-    private fun requestStoragePermissions() {
-        ActivityCompat.requestPermissions(
-            this,
-            arrayOf(
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ),
-            STORAGE_PERMISSION_REQUEST_CODE
-        )
-    }
-
-    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
-        ContextCompat.checkSelfPermission(baseContext, it) == PackageManager.PERMISSION_GRANTED
-    }
 
     private fun areStoragePermissionsGranted(): Boolean {
         val readPermissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES)
@@ -75,18 +60,16 @@ class ZakatFitrahActivity : AppCompatActivity() {
         binding.btGambar.setOnClickListener { view->
             startGallery()
         }
-        binding.buttonUpload.setOnClickListener { view ->
-           upload()
-        }
+
 
         val dropdown : AutoCompleteTextView = binding.autoComplete
         val items = listOf("Zakat Mal","Zakat Fitrah","Zakat Fidyah")
         val adapter = ArrayAdapter(this,R.layout.dropdown_item,items)
 
         dropdown.setAdapter(adapter)
-
         dropdown.onItemClickListener = AdapterView.OnItemClickListener{
             adapterView, view, i, l ->
+            flagJenisZakat =i;
             if (i < 1){
                 binding.etTanggungan.isEnabled =false
                 binding.etTanggungan.setText("1")
@@ -97,6 +80,12 @@ class ZakatFitrahActivity : AppCompatActivity() {
                 binding.etTanggungan.setBackgroundColor(0x00000000)
 
             }
+        }
+        binding.buttonUpload.setOnClickListener { view ->
+            binding.buttonUpload.isEnabled = false
+            binding.progressBar.visibility = View.VISIBLE
+            binding.buttonUpload.setBackgroundColor(ContextCompat.getColor(this,R.color.red))
+            upload()
         }
     }
 
@@ -118,7 +107,7 @@ class ZakatFitrahActivity : AppCompatActivity() {
                 call: Call<RegisterResponse>,
                 response: Response<RegisterResponse>
             ) {
-
+                binding.progressBar.visibility = View.GONE
                 val responseBody = response.body()
                 if (response.isSuccessful && responseBody != null) {
                     Toast.makeText(this@ZakatFitrahActivity,responseBody.status,Toast.LENGTH_SHORT).show()
@@ -134,8 +123,6 @@ class ZakatFitrahActivity : AppCompatActivity() {
                 Toast.makeText(this@ZakatFitrahActivity,t.message,Toast.LENGTH_SHORT).show()
             }
         })
-
-
     }
 
     private fun startGallery() {
@@ -148,9 +135,6 @@ class ZakatFitrahActivity : AppCompatActivity() {
                 val chooser = Intent.createChooser(intent, "Choose a Picture")
                 launcherIntentGallery.launch(chooser)
             }
-
-
-
     }
     private val launcherIntentGallery = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -169,8 +153,6 @@ class ZakatFitrahActivity : AppCompatActivity() {
         ) { isGranted: Boolean ->
             if (isGranted) {
                 startGallery()
-                // Permission is granted. Continue the action or workflow in your
-                // app.
             }else{
                 val dialogBuilder = AlertDialog.Builder(this)
                 dialogBuilder.setTitle("Akses Media")
@@ -182,7 +164,6 @@ class ZakatFitrahActivity : AppCompatActivity() {
                 dialogBuilder.setNegativeButton("Cancel") { dialog, _ ->
                     dialog.dismiss()
                     finish()
-                    // Handle the case where the user cancels the permission request or provide an alternative flow.
                 }
                 val dialog = dialogBuilder.create()
                 dialog.show()
@@ -194,17 +175,5 @@ class ZakatFitrahActivity : AppCompatActivity() {
             val userPreferences = UserPreferences(this@ZakatFitrahActivity)
             addZakat(getFile as File,timeStamp,userPreferences.getId().toString(),binding.etjumlahUang.text.toString(),binding.etTanggungan.text.toString())
 
-    }
-
-    private fun getRealPathFromUri(uri: Uri): String {
-        val projection = arrayOf(MediaStore.Images.Media.DATA)
-        val cursor = contentResolver.query(uri, projection, null, null, null)
-        cursor?.use {
-            if (it.moveToFirst()) {
-                val columnIndex = it.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
-                return it.getString(columnIndex)
-            }
-        }
-        return ""
     }
 }

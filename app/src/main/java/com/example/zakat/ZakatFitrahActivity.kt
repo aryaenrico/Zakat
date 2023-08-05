@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -38,15 +39,8 @@ import java.io.File
 
 class ZakatFitrahActivity : AppCompatActivity() {
     private lateinit var binding: ActivityZakatFitrahBinding
-    private var flagJenisZakat=0;
+    private var flagJenisZakat=1;
     private var getFile: File? = null
-    companion object {
-
-        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.READ_MEDIA_IMAGES)
-        private const val STORAGE_PERMISSION_REQUEST_CODE = 100
-    }
-
-
     private fun areStoragePermissionsGranted(): Boolean {
         val readPermissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES)
         return readPermissionCheck == PackageManager.PERMISSION_GRANTED
@@ -63,14 +57,14 @@ class ZakatFitrahActivity : AppCompatActivity() {
 
 
         val dropdown : AutoCompleteTextView = binding.autoComplete
-        val items = listOf("Zakat Mal","Zakat Fitrah","Zakat Fidyah")
+        val items = listOf("Zakat Mal","Zakat Fidyah","Zakat Fitrah")
         val adapter = ArrayAdapter(this,R.layout.dropdown_item,items)
 
         dropdown.setAdapter(adapter)
         dropdown.onItemClickListener = AdapterView.OnItemClickListener{
             adapterView, view, i, l ->
-            flagJenisZakat =i;
-            if (i < 1){
+            flagJenisZakat =i+1;
+            if (i < 2){
                 binding.etTanggungan.isEnabled =false
                 binding.etTanggungan.setText("1")
                 binding.etTanggungan.setBackgroundColor(ContextCompat.getColor(this, R.color.grey))
@@ -86,12 +80,14 @@ class ZakatFitrahActivity : AppCompatActivity() {
             binding.progressBar.visibility = View.VISIBLE
             binding.buttonUpload.setBackgroundColor(ContextCompat.getColor(this,R.color.red))
             upload()
+            //Toast.makeText(this@ZakatFitrahActivity,flagJenisZakat.toString(),Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun addZakat(file:File,tanggal:String,id_pembayar:String,pembayaran_uang:String,tanggungan:String){
+    private fun addZakat(file:File,tanggal:String,id_pembayar:String,pembayaran_uang:String,tanggungan:String,kode:Int){
 
         val TANGGAL = tanggal.toRequestBody("text/plain".toMediaType())
+        val KODE= kode.toString().toRequestBody("text/plain".toMediaType())
         val ID_PEMBAYAR = id_pembayar.toRequestBody("text/plain".toMediaType())
         val Pembayaran_uang = pembayaran_uang.toRequestBody("text/plain".toMediaType())
         val Tanggungan = tanggungan.toRequestBody("text/plain".toMediaType())
@@ -101,7 +97,7 @@ class ZakatFitrahActivity : AppCompatActivity() {
             file.name,
             requestImageFile
         )
-        val client =ApiConfig.getApiService().addZakat(imageMultipart,TANGGAL,ID_PEMBAYAR,Pembayaran_uang,Tanggungan)
+        val client =ApiConfig.getApiService().addZakat(imageMultipart,TANGGAL,ID_PEMBAYAR,Pembayaran_uang,Tanggungan,KODE)
         client.enqueue(object : Callback<RegisterResponse> {
             override fun onResponse(
                 call: Call<RegisterResponse>,
@@ -114,13 +110,20 @@ class ZakatFitrahActivity : AppCompatActivity() {
                     val intent = Intent(this@ZakatFitrahActivity, DashboardActivity::class.java)
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
                     startActivity(intent)
+
                 } else {
                     Toast.makeText(this@ZakatFitrahActivity,"gagal",Toast.LENGTH_SHORT).show()
+                    binding.buttonUpload.isEnabled = false
+
+                    binding.buttonUpload.setBackgroundDrawable(R.drawable.bg_button as Drawable)
                 }
             }
             override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
 
                 Toast.makeText(this@ZakatFitrahActivity,t.message,Toast.LENGTH_SHORT).show()
+                binding.buttonUpload.isEnabled = true
+
+                binding.buttonUpload.setBackgroundColor(ContextCompat.getColor(this@ZakatFitrahActivity,R.color.red))
             }
         })
     }
@@ -173,7 +176,7 @@ class ZakatFitrahActivity : AppCompatActivity() {
     private fun upload(){
 
             val userPreferences = UserPreferences(this@ZakatFitrahActivity)
-            addZakat(getFile as File,timeStamp,userPreferences.getId().toString(),binding.etjumlahUang.text.toString(),binding.etTanggungan.text.toString())
+            addZakat(getFile as File,timeStamp,userPreferences.getId().toString(),binding.etjumlahUang.text.toString(),binding.etTanggungan.text.toString(),flagJenisZakat)
 
     }
 }

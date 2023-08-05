@@ -1,5 +1,6 @@
 package com.example.zakat.retrofit
 
+import com.example.zakat.model.HistoryResponse
 import com.example.zakat.model.LoginResponse
 import com.example.zakat.model.RegisterResponse
 import okhttp3.MultipartBody
@@ -7,10 +8,12 @@ import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
+import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
+import retrofit2.http.Query
 
 interface ApiService {
     @FormUrlEncoded
@@ -28,6 +31,10 @@ interface ApiService {
         @Part("tanggal") description: RequestBody,
         @Part("id_pembayar") id_pembayar: RequestBody,
         @Part("pembayaran_uang") pembayaran_uang: RequestBody,
-        @Part("tanggungan") tanggungan: RequestBody
+        @Part("tanggungan") tanggungan: RequestBody,
+        @Part("kode") kode: RequestBody
     ):Call<RegisterResponse>
+
+    @GET("status_pembayaran.php")
+    fun getHistoryTranscaction(@Query ("id") id:Int):Call<HistoryResponse>
 }

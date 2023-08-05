@@ -20,5 +20,9 @@ class DashboardActivity : AppCompatActivity() {
             val moveIntent = Intent(this@DashboardActivity, ZakatFitrahActivity::class.java)
             startActivity(moveIntent)
         }
+        binding.imageView5.setOnClickListener {
+            val moveIntent = Intent(this@DashboardActivity, History_Activity::class.java)
+            startActivity(moveIntent)
+        }
     }
 }

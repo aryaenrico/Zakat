@@ -42,16 +42,17 @@ fun uriToFile(selectedImg: Uri, context: Context): File {
     // menulis data dari uri kedalam file
     val inputStream = contentResolver.openInputStream(selectedImg) as InputStream
     val outputStream: OutputStream = FileOutputStream(myFile)
-    val buf = ByteArray(4000)
+    val buf = ByteArray(1000)
     var len: Int
 
     // menulis apa yang ada pada stream (uri temporary file ) dan diletakan pada file
     while (inputStream.read(buf).also { len = it } > 0) outputStream.write(buf, 0, len)
     outputStream.close()
     inputStream.close()
+    val result = reduceFileImage(myFile)
 
     // untuk mengirim data ke server
-    return myFile
+    return result
 }
 fun uriToFile2( uri: Uri,context: Context): File? {
     val projection = arrayOf(MediaStore.Images.Media.DATA)
@@ -67,29 +68,38 @@ fun uriToFile2( uri: Uri,context: Context): File? {
     return null
 }
 
-fun resizeImage(imagePath: String, maxWidth: Int, maxHeight: Int): Bitmap? {
-    // Decode the image file into a Bitmap object
+fun resizeImage(context: Context, imageUri: Uri, targetWidth: Int, targetHeight: Int): Bitmap {
+    val contentResolver: ContentResolver = context.contentResolver
+
+    // Open an InputStream from the Uri
+    val inputStream: InputStream = contentResolver.openInputStream(imageUri)
+        ?: throw IllegalArgumentException("Could not open InputStream for the provided Uri")
+
+    // First, decode the image InputStream using BitmapFactory
     val options = BitmapFactory.Options()
     options.inJustDecodeBounds = true
-    BitmapFactory.decodeFile(imagePath, options)
+    BitmapFactory.decodeStream(inputStream, null, options)
 
-    // Calculate the sample size to scale down the image
-    options.inSampleSize = calculateSampleSize(options, maxWidth, maxHeight)
+    // Calculate the scaling factor to resize the image
+    val scaleFactor = calculateScaleFactor(options.outWidth, options.outHeight, targetWidth, targetHeight)
 
-    // Decode the image file again, this time with the sample size
+    // Reset the input stream and load and resize the image using BitmapFactory with the calculated scaling factor
+    inputStream.reset()
     options.inJustDecodeBounds = false
-    val bitmap = BitmapFactory.decodeFile(imagePath, options)
+    options.inSampleSize = scaleFactor
+    val resizedBitmap = BitmapFactory.decodeStream(inputStream, null, options)
 
-    // Resize the bitmap to the desired dimensions
-    val resizedBitmap = Bitmap.createScaledBitmap(bitmap, maxWidth, maxHeight, false)
-
-    // Recycle the original bitmap if necessary
-    if (resizedBitmap != bitmap) {
-        bitmap.recycle()
-    }
-
-    return resizedBitmap
+    return resizedBitmap !!
 }
+
+fun calculateScaleFactor(srcWidth: Int, srcHeight: Int, dstWidth: Int, dstHeight: Int): Int {
+    val widthScale = srcWidth.toFloat() / dstWidth
+    val heightScale = srcHeight.toFloat() / dstHeight
+    val scaleFactor = Math.min(widthScale, heightScale)
+    return Math.round(scaleFactor)
+}
+
+
 
 private fun calculateSampleSize(options: BitmapFactory.Options, maxWidth: Int, maxHeight: Int): Int {
     var sampleSize = 1

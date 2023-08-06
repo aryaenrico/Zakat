@@ -1,9 +1,9 @@
 package com.example.zakat
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.example.zakat.databinding.ActivityMainBinding
 import com.example.zakat.model.LoginResponse
 import com.example.zakat.retrofit.ApiConfig
@@ -23,7 +23,10 @@ class LoginActivity1 : AppCompatActivity() {
 
         if (userPreferences.getId() != 0 ){
             val moveIntent = Intent(this@LoginActivity1, DashboardActivity::class.java)
+            moveIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(moveIntent)
+            Toast.makeText(this@LoginActivity1,userPreferences.getId().toString(),Toast.LENGTH_SHORT).show()
+            finish()
         }
         binding.btLogin.setOnClickListener{view->
             Toast.makeText(this@LoginActivity1,"tunggu",Toast.LENGTH_SHORT).show()
@@ -49,9 +52,11 @@ class LoginActivity1 : AppCompatActivity() {
 
                     val userPreferences = UserPreferences(this@LoginActivity1);
                     userPreferences.setId(responseBody.id)
+                    userPreferences.setNama(responseBody.name)
                     val intent = Intent(this@LoginActivity1, DashboardActivity::class.java)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
                     startActivity(intent)
+                    finish()
                 } else {
                     Toast.makeText(this@LoginActivity1,responseBody?.message,Toast.LENGTH_SHORT).show()
                 }

@@ -11,4 +11,8 @@ class LoginResponse(
 
     @field:SerializedName("id")
     val id: Int,
+
+    @field:SerializedName("nama")
+    val name: String,
+
 )

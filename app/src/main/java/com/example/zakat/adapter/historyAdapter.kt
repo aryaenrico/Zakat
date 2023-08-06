@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.zakat.Detal_History_Activity
 import com.example.zakat.R
 import com.example.zakat.model.DaftarTransfer
 import com.example.zakat.model.HistoryResponse
@@ -31,11 +32,11 @@ class historyAdapter (private val listData: ArrayList<DaftarTransfer>): Recycler
         holder.tvName.text = "Tanggal : "+listData[position].tgl_penyerahan
         holder.tvTotal.text = token(currency(listData[position].total_pembayaran.toInt()))
         holder.tvTipeZakat.text ="Status: "+listData[position].status
-//        holder.itemView.setOnClickListener {
-//            val intent = Intent(holder.itemView.context,Detail_Transfer::class.java)
-//            intent.putExtra("transfer",listData[position])
-//            holder.itemView.context.startActivity(intent)
-//        }
+        holder.itemView.setOnClickListener {
+            val intent = Intent(holder.itemView.context,Detal_History_Activity::class.java)
+            intent.putExtra("transfer",listData[position])
+            holder.itemView.context.startActivity(intent)
+        }
     }
 
     private fun currency(data:Int):String{

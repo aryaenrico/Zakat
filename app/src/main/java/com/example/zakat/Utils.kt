@@ -51,24 +51,6 @@ fun uriToFile(selectedImg: Uri, context: Context): File {
     inputStream.close()
     val result = reduceFileImage(myFile)
 
-
-
-
-    // mengubah gambar pada uri
-    // menulis data dari uri kedalam file
-
-
-
-//    val outputStream2: OutputStream = FileOutputStream(myFile2)
-//    val buf2 = ByteArray(2000)
-//    var len2: Int
-//
-//    // menulis apa yang ada pada stream (uri temporary file ) dan diletakan pada file
-//    while (inputStream2.read(buf).also { len2 = it } > 0) outputStream2.write(buf2, 0, len2)
-//    outputStream2.close()
-//    inputStream2.close()
-
-
     // untuk mengirim data ke server
     return result
 }

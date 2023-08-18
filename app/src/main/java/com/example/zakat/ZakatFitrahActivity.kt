@@ -8,28 +8,22 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.bumptech.glide.Glide
-import com.example.zakat.databinding.ActivityMainBinding
+import androidx.lifecycle.ViewModelProvider
 import com.example.zakat.databinding.ActivityZakatFitrahBinding
-import com.example.zakat.model.LoginResponse
 import com.example.zakat.model.RegisterResponse
 import com.example.zakat.retrofit.ApiConfig
 import com.example.zakat.sharedpreferences.UserPreferences
-import com.google.android.material.snackbar.Snackbar
-import okhttp3.MediaType
+import com.example.zakat.viewModel.ZakatViewModel
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Call
@@ -39,8 +33,10 @@ import java.io.File
 
 class ZakatFitrahActivity : AppCompatActivity() {
     private lateinit var binding: ActivityZakatFitrahBinding
-    private var flagJenisZakat=1;
-    private var getFile: File? = null
+    private lateinit var viewModel: ZakatViewModel
+    private var flagJenisZakat=0;
+    private lateinit var userPreferences:UserPreferences
+    private  var getFile: File? = null
     private fun areStoragePermissionsGranted(): Boolean {
         val readPermissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES)
         return readPermissionCheck == PackageManager.PERMISSION_GRANTED
@@ -50,9 +46,19 @@ class ZakatFitrahActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding =ActivityZakatFitrahBinding.inflate(layoutInflater)
         setContentView(binding.root);
+        viewModel = ViewModelProvider(this).get(ZakatViewModel::class.java)
+        userPreferences = UserPreferences(this@ZakatFitrahActivity)
 
         binding.btGambar.setOnClickListener { view->
             startGallery()
+        }
+
+        viewModel.loading.observe(this) {
+            if (it) {
+                binding.progressBar.visibility = View.VISIBLE
+            } else {
+                binding.progressBar.visibility = View.GONE
+            }
         }
 
 
@@ -76,11 +82,16 @@ class ZakatFitrahActivity : AppCompatActivity() {
             }
         }
         binding.buttonUpload.setOnClickListener { view ->
-            binding.buttonUpload.isEnabled = false
-            binding.progressBar.visibility = View.VISIBLE
-            binding.buttonUpload.setBackgroundColor(ContextCompat.getColor(this,R.color.red))
-            upload()
-            //Toast.makeText(this@ZakatFitrahActivity,flagJenisZakat.toString(),Toast.LENGTH_SHORT).show()
+
+            if(!checkField()){
+                binding.buttonUpload.isEnabled = false
+                binding.progressBar.visibility = View.VISIBLE
+                binding.buttonUpload.setBackgroundColor(ContextCompat.getColor(this,R.color.red))
+
+                viewModel.sendZakat(getFile as File ,timeStamp,userPreferences.getId().toString(),binding.etjumlahUang.text.toString(),binding.etTanggungan.text.toString(),flagJenisZakat)
+
+            }
+
         }
     }
 
@@ -178,5 +189,29 @@ class ZakatFitrahActivity : AppCompatActivity() {
             val userPreferences = UserPreferences(this@ZakatFitrahActivity)
             addZakat(getFile as File,timeStamp,userPreferences.getId().toString(),binding.etjumlahUang.text.toString(),binding.etTanggungan.text.toString(),flagJenisZakat)
 
+    }
+
+    private fun checkField():Boolean{
+        var result = false
+        when {
+            flagJenisZakat == 0 ->{
+                Toast.makeText(this@ZakatFitrahActivity,"Tentukan Pilihan Zakat Terlebih Dahulu",Toast.LENGTH_SHORT).show()
+                result =true
+            }
+            getFile == null ->{
+                Toast.makeText(this@ZakatFitrahActivity,"Masukan Bukti Transfer Terlebih Dahulu",Toast.LENGTH_SHORT).show()
+                result =true
+            }
+            binding.etTanggungan.text.toString().isEmpty() -> {
+                binding.etTanggungan.setError("Harap masuka jumlah tanggungan")
+                result = true
+            }
+            binding.etjumlahUang.text.toString().isEmpty() -> {
+                binding.etTanggungan.setError("Harap masukan jumlah uang")
+                result =true
+            }
+
+        }
+        return result
     }
 }

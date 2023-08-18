@@ -1,19 +1,23 @@
 package com.example.zakat
 
 import android.Manifest
+
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import android.widget.CompoundButton
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
+
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.example.zakat.databinding.ActivityZakatFitrahBinding
@@ -31,12 +35,16 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
 
+
 class ZakatFitrahActivity : AppCompatActivity() {
     private lateinit var binding: ActivityZakatFitrahBinding
     private lateinit var viewModel: ZakatViewModel
     private var flagJenisZakat=0;
+    private var flagJenisSumbangan=0;
     private lateinit var userPreferences:UserPreferences
     private  var getFile: File? = null
+    private var check:Boolean = false
+
     private fun areStoragePermissionsGranted(): Boolean {
         val readPermissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES)
         return readPermissionCheck == PackageManager.PERMISSION_GRANTED
@@ -59,6 +67,7 @@ class ZakatFitrahActivity : AppCompatActivity() {
             } else {
                 binding.progressBar.visibility = View.GONE
             }
+
         }
 
 
@@ -66,7 +75,34 @@ class ZakatFitrahActivity : AppCompatActivity() {
         val items = listOf("Zakat Mal","Zakat Fidyah","Zakat Fitrah")
         val adapter = ArrayAdapter(this,R.layout.dropdown_item,items)
 
+        val dropdownSumbangan : AutoCompleteTextView = binding.autoComplete2
+        val itemsSumbangan = listOf("infak","sedekah")
+        val adapterSumbangan = ArrayAdapter(this,R.layout.dropdown_item,itemsSumbangan)
+
+
+
+
+
+        binding.checkBox.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                viewModel.setTambahan(true);
+            } else {
+                viewModel.setTambahan(false);
+            }
+            check = isChecked
+        })
+
+        viewModel.tambahan.observe(this) {
+            if (!it) {
+               binding.container.visibility = View.GONE
+
+            }else{
+                binding.container.visibility = View.VISIBLE
+            }
+        }
+
         dropdown.setAdapter(adapter)
+        dropdownSumbangan.setAdapter(adapterSumbangan)
         dropdown.onItemClickListener = AdapterView.OnItemClickListener{
             adapterView, view, i, l ->
             flagJenisZakat =i+1;
@@ -81,63 +117,94 @@ class ZakatFitrahActivity : AppCompatActivity() {
 
             }
         }
+
+        dropdownSumbangan.onItemClickListener = AdapterView.OnItemClickListener{
+                adapterView, view, i, l ->
+           flagJenisSumbangan =i+4;
+
+        }
         binding.buttonUpload.setOnClickListener { view ->
 
             if(!checkField()){
-                binding.buttonUpload.isEnabled = false
-                binding.progressBar.visibility = View.VISIBLE
-                binding.buttonUpload.setBackgroundColor(ContextCompat.getColor(this,R.color.red))
+                if (check == true){
+                    if (!checkFieldSumbangan()){
+                        binding.buttonUpload.isEnabled = false
+                        binding.progressBar.visibility = View.VISIBLE
+                        binding.buttonUpload.setBackgroundColor(ContextCompat.getColor(this,R.color.red))
+                        viewModel.sendZakat(getFile as File ,timeStamp,userPreferences.getId().toString(),binding.etjumlahUang.text.toString(),binding.etTanggungan.text.toString(),flagJenisZakat,flagJenisSumbangan.toString(),binding.etjumlahUangSumbangan.text.toString())
+                    }
+                }else{
+                    binding.buttonUpload.isEnabled = false
+                    binding.progressBar.visibility = View.VISIBLE
+                    binding.buttonUpload.setBackgroundColor(ContextCompat.getColor(this,R.color.red))
+                    viewModel.sendZakat(getFile as File ,timeStamp,userPreferences.getId().toString(),binding.etjumlahUang.text.toString(),binding.etTanggungan.text.toString(),flagJenisZakat,flagJenisSumbangan.toString(),binding.etjumlahUangSumbangan.text.toString())
+                }
 
-                viewModel.sendZakat(getFile as File ,timeStamp,userPreferences.getId().toString(),binding.etjumlahUang.text.toString(),binding.etTanggungan.text.toString(),flagJenisZakat)
 
             }
 
+        }
+
+        viewModel.result.observe(this){
+            when(it){
+                "sukses"->{
+                    Toast.makeText(this@ZakatFitrahActivity,"Data Berhasil Terkirim",Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this@ZakatFitrahActivity, DashboardActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(intent)
+                }
+                else->{
+                    Toast.makeText(this@ZakatFitrahActivity,it,Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 
     private fun addZakat(file:File,tanggal:String,id_pembayar:String,pembayaran_uang:String,tanggungan:String,kode:Int){
 
-        val TANGGAL = tanggal.toRequestBody("text/plain".toMediaType())
-        val KODE= kode.toString().toRequestBody("text/plain".toMediaType())
-        val ID_PEMBAYAR = id_pembayar.toRequestBody("text/plain".toMediaType())
-        val Pembayaran_uang = pembayaran_uang.toRequestBody("text/plain".toMediaType())
-        val Tanggungan = tanggungan.toRequestBody("text/plain".toMediaType())
-        val requestImageFile = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
-        val imageMultipart: MultipartBody.Part = MultipartBody.Part.createFormData(
-            "file",
-            file.name,
-            requestImageFile
-        )
-        val client =ApiConfig.getApiService().addZakat(imageMultipart,TANGGAL,ID_PEMBAYAR,Pembayaran_uang,Tanggungan,KODE)
-        client.enqueue(object : Callback<RegisterResponse> {
-            override fun onResponse(
-                call: Call<RegisterResponse>,
-                response: Response<RegisterResponse>
-            ) {
-                binding.progressBar.visibility = View.GONE
-                val responseBody = response.body()
-                if (response.isSuccessful && responseBody != null) {
-                    Toast.makeText(this@ZakatFitrahActivity,responseBody.status,Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this@ZakatFitrahActivity, DashboardActivity::class.java)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-                    startActivity(intent)
-
-                } else {
-                    Toast.makeText(this@ZakatFitrahActivity,"gagal",Toast.LENGTH_SHORT).show()
-                    binding.buttonUpload.isEnabled = false
-
-                    binding.buttonUpload.setBackgroundDrawable(R.drawable.bg_button as Drawable)
-                }
-            }
-            override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
-
-                Toast.makeText(this@ZakatFitrahActivity,t.message,Toast.LENGTH_SHORT).show()
-                binding.buttonUpload.isEnabled = true
-
-                binding.buttonUpload.setBackgroundColor(ContextCompat.getColor(this@ZakatFitrahActivity,R.color.red))
-            }
-        })
+//        val TANGGAL = tanggal.toRequestBody("text/plain".toMediaType())
+//        val KODE= kode.toString().toRequestBody("text/plain".toMediaType())
+//        val ID_PEMBAYAR = id_pembayar.toRequestBody("text/plain".toMediaType())
+//        val Pembayaran_uang = pembayaran_uang.toRequestBody("text/plain".toMediaType())
+//        val Tanggungan = tanggungan.toRequestBody("text/plain".toMediaType())
+//        val requestImageFile = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
+//        val imageMultipart: MultipartBody.Part = MultipartBody.Part.createFormData(
+//            "file",
+//            file.name,
+//            requestImageFile
+//        )
+//        val client =ApiConfig.getApiService().addZakat(imageMultipart,TANGGAL,ID_PEMBAYAR,Pembayaran_uang,Tanggungan,KODE)
+//        client.enqueue(object : Callback<RegisterResponse> {
+//            override fun onResponse(
+//                call: Call<RegisterResponse>,
+//                response: Response<RegisterResponse>
+//            ) {
+//                binding.progressBar.visibility = View.GONE
+//                val responseBody = response.body()
+//                if (response.isSuccessful && responseBody != null) {
+//                    Toast.makeText(this@ZakatFitrahActivity,responseBody.status,Toast.LENGTH_SHORT).show()
+//                    val intent = Intent(this@ZakatFitrahActivity, DashboardActivity::class.java)
+//                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+//                    startActivity(intent)
+//
+//                } else {
+//                    Toast.makeText(this@ZakatFitrahActivity,"gagal",Toast.LENGTH_SHORT).show()
+//                    binding.buttonUpload.isEnabled = false
+//
+//                    binding.buttonUpload.setBackgroundDrawable(R.drawable.bg_button as Drawable)
+//                }
+//            }
+//            override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
+//
+//                Toast.makeText(this@ZakatFitrahActivity,t.message,Toast.LENGTH_SHORT).show()
+//                binding.buttonUpload.isEnabled = true
+//
+//                binding.buttonUpload.setBackgroundColor(ContextCompat.getColor(this@ZakatFitrahActivity,R.color.red))
+//            }
+//        })
     }
+
+
 
     private fun startGallery() {
             if(!areStoragePermissionsGranted()){
@@ -197,21 +264,41 @@ class ZakatFitrahActivity : AppCompatActivity() {
             flagJenisZakat == 0 ->{
                 Toast.makeText(this@ZakatFitrahActivity,"Tentukan Pilihan Zakat Terlebih Dahulu",Toast.LENGTH_SHORT).show()
                 result =true
+
             }
             getFile == null ->{
                 Toast.makeText(this@ZakatFitrahActivity,"Masukan Bukti Transfer Terlebih Dahulu",Toast.LENGTH_SHORT).show()
                 result =true
             }
-            binding.etTanggungan.text.toString().isEmpty() -> {
+            binding.etTanggungan.text.toString().isBlank() -> {
                 binding.etTanggungan.setError("Harap masuka jumlah tanggungan")
                 result = true
             }
             binding.etjumlahUang.text.toString().isEmpty() -> {
-                binding.etTanggungan.setError("Harap masukan jumlah uang")
+                binding.etjumlahUang.setError("Harap masukan jumlah uang")
                 result =true
             }
 
         }
+
         return result
     }
+    private fun checkFieldSumbangan():Boolean{
+        var result = false
+        when{
+            binding.etjumlahUangSumbangan.text.toString().isBlank() ->{
+                binding.etjumlahUangSumbangan.setError("Harap Masukan Jumlah Sumbangan")
+                result = true
+            }
+            flagJenisSumbangan == 0 ->{
+                Toast.makeText(this@ZakatFitrahActivity,"Tentukan Pilihan sumbangan Terlebih Dahulu",Toast.LENGTH_SHORT).show()
+                result = true
+            }
+            }
+        return result
+        }
+
+
+
+
 }

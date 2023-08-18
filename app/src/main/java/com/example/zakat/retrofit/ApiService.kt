@@ -32,7 +32,9 @@ interface ApiService {
         @Part("id_pembayar") id_pembayar: RequestBody,
         @Part("pembayaran_uang") pembayaran_uang: RequestBody,
         @Part("tanggungan") tanggungan: RequestBody,
-        @Part("kode") kode: RequestBody
+        @Part("kode") kode: RequestBody,
+        @Part("kode_sumbangan") kode_sumbangan: RequestBody,
+        @Part("total_tambahan") total_tambahan: RequestBody
     ):Call<RegisterResponse>
 
     @GET("status_pembayaran.php")

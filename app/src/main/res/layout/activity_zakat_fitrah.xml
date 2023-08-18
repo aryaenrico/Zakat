@@ -1,13 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:padding="16dp">
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:layout_marginTop="12dp"
     android:background="@color/white"
     android:focusableInTouchMode="true"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:id="@+id/parent"
+    >
 
 
     <TextView
@@ -87,12 +95,11 @@
         android:layout_marginTop="16dp"
         android:text="@string/jumlah_tanggungan"
         android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.137"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/etjumlah_uang"
         app:layout_constraintBottom_toTopOf="@+id/etTanggungan"
-        />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.004"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etjumlah_uang" />
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/etTanggungan"
@@ -117,9 +124,89 @@
         android:layout_marginTop="12dp"
         android:scaleType="centerCrop"
         android:src="@drawable/uploadstruk"
-        app:layout_constraintTop_toBottomOf="@id/etTanggungan"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.937"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/etTanggungan"
+        />
+
+    <CheckBox
+        android:id="@+id/checkBox"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:text="Tambahan Transaski"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/gambar" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/checkBox"
+        android:id="@+id/container">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/spinner_sumbangan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:boxCornerRadiusBottomEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxStrokeColor="#E0E0E0"
+            app:boxBackgroundColor="@color/white"
+            app:boxCornerRadiusTopStart="12dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/txt_jumlah_sumbangan"
+
+
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+
+            <AutoCompleteTextView
+                android:id="@+id/autoComplete2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:text="@string/jenis_zakat" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/txt_jumlah_sumbangan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="jumlah_sumbangan"
+            android:textSize="18sp"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.004"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/spinner_sumbangan" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/etjumlah_uang_sumbangan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20px"
+            android:autofillHints="username"
+            android:background="@drawable/bg_textfield"
+            android:drawableStart="@drawable/baseline_attach_money_24"
+            android:drawablePadding="12dp"
+            android:hint="jumlah sumbangan"
+            android:inputType="number"
+            android:padding="16dp"
+            android:textSize="14sp"
+          app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txt_jumlah_sumbangan" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btGambar"
@@ -130,7 +217,7 @@
         android:letterSpacing="0.2"
         android:text="@string/uploadstruk"
         android:textStyle="normal"
-        app:layout_constraintTop_toBottomOf="@id/gambar"
+        app:layout_constraintTop_toBottomOf="@+id/container"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
@@ -161,8 +248,11 @@
         app:layout_constraintTop_toBottomOf="@id/btGambar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="10px"
         />
 
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

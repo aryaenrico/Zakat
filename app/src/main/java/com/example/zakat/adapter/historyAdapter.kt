@@ -27,7 +27,7 @@ class historyAdapter (private val listData: ArrayList<DaftarTransfer>): Recycler
 
     override fun onBindViewHolder(holder: historyAdapter.HistoryTrsanferAdapater, position: Int) {
         Glide.with(holder.itemView.context)
-            .load("https://indrasela.net/mobile_zakat/foto/${listData[position].foto}")
+            .load("https://indrasela.net/mobilezakat/foto/${listData[position].foto}")
             .into(holder.imgPhoto)
         holder.tvName.text = "Tanggal : "+listData[position].tgl_penyerahan
         holder.tvTotal.text = token(currency(listData[position].total_pembayaran.toInt()))

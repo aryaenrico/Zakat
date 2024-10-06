@@ -21,7 +21,7 @@ class Detal_History_Activity : AppCompatActivity() {
         binding.tvJumlah.text = token(currency(param.total_pembayaran.toInt()))
 
         Glide.with(this@Detal_History_Activity)
-            .load("https://indrasela.net/mobile_zakat/foto/${param?.foto}")
+            .load("https://indrasela.net/mobilezakat/foto/${param?.foto}")
             .into(binding.gambar)
 
         binding.tvStatus.text = param?.status

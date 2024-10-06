@@ -47,6 +47,7 @@ fun uriToFile(selectedImg: Uri, context: Context): File {
 
     // menulis apa yang ada pada stream (uri temporary file ) dan diletakan pada file
     while (inputStream.read(buf).also { len = it } > 0) outputStream.write(buf, 0, len)
+    outputStream.flush()
     outputStream.close()
     inputStream.close()
     val result = reduceFileImage(myFile)

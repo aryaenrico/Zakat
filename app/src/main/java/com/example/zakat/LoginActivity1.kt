@@ -25,7 +25,7 @@ class LoginActivity1 : AppCompatActivity() {
             val moveIntent = Intent(this@LoginActivity1, DashboardActivity::class.java)
             moveIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(moveIntent)
-            Toast.makeText(this@LoginActivity1,userPreferences.getId().toString(),Toast.LENGTH_SHORT).show()
+            //Toast.makeText(this@LoginActivity1,userPreferences.getId().toString(),Toast.LENGTH_SHORT).show()
             finish()
         }
         binding.btLogin.setOnClickListener{view->

@@ -45,10 +45,6 @@ class ZakatFitrahActivity : AppCompatActivity() {
     private  var getFile: File? = null
     private var check:Boolean = false
 
-    private fun areStoragePermissionsGranted(): Boolean {
-        val readPermissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES)
-        return readPermissionCheck == PackageManager.PERMISSION_GRANTED
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -205,17 +201,31 @@ class ZakatFitrahActivity : AppCompatActivity() {
     }
 
 
-
+   val  getImageLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        result ->
+        if (result.resultCode == RESULT_OK) {
+            val data: Intent? = result.data
+            val selectedImg: Uri = data?.data as Uri
+            binding.gambar.setImageURI(selectedImg)
+            val myFile = uriToFile(selectedImg, this@ZakatFitrahActivity)
+            getFile = myFile
+        }else{
+            Toast.makeText(this@ZakatFitrahActivity,"error",Toast.LENGTH_SHORT)
+        }
+    }
     private fun startGallery() {
             if(!areStoragePermissionsGranted()){
                 requestPermissionLauncher.launch(Manifest.permission.READ_MEDIA_IMAGES)
             }else{
-                val intent = Intent()
-                intent.action = Intent.ACTION_GET_CONTENT
+                val intent = Intent(Intent.ACTION_PICK)
                 intent.type = "image/*"
-                val chooser = Intent.createChooser(intent, "Choose a Picture")
-                launcherIntentGallery.launch(chooser)
+                getImageLauncher.launch(intent)
             }
+    }
+
+    private fun areStoragePermissionsGranted(): Boolean {
+        val readPermissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES)
+        return readPermissionCheck == PackageManager.PERMISSION_GRANTED
     }
     private val launcherIntentGallery = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
